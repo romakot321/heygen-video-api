@@ -18,10 +18,12 @@ class HeygenTaskRunner(ITaskRunner[IntegrationTaskResultDTO]):
     async def start(self, data: TaskRun) -> IntegrationTaskResultDTO:
         request = TaskRunToRequestMapper().map_one(data)
         response = await self.adapter.create_avatar_video(request)
+        response = response.data
         return IntegrationTaskResultDTO(status=IntegrationTaskStatus.pending, external_task_id=response.video_id)
 
     async def get_result(self, external_task_id: str) -> IntegrationTaskResultDTO | None:
         response = await self.adapter.retrieve_video_status(external_task_id)
+        response = response.data
         error = None if response.error is None else json.dumps(response.error)
         return IntegrationTaskResultDTO(status=response.status, external_task_id=external_task_id,
                                         thumbnail_url=response.thumbnail_url, video_url=response.video_url, error=error)

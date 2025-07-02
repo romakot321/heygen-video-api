@@ -64,46 +64,62 @@ class TalkingPhotoCharacter(BaseModel):
 
 
 class HeygenRunRequest(BaseModel):
-    character: AvatarCharacter | TalkingPhotoCharacter | None = None
-    voice: TextVoice | AudioVoice | SilenceVoice
-    background: Background | None = None
+    class VideoInput(BaseModel):
+        character: AvatarCharacter | TalkingPhotoCharacter | None = None
+        voice: TextVoice | AudioVoice | SilenceVoice
+        background: Background | None = None
+
+    video_inputs: list[VideoInput]
+    dimension: TypedDict("Dimension", {"width": int, "height": int}) = {"width": 1280, "height": 720}
 
 
 class HeygenRunResponse(BaseModel):
-    video_id: str
+    class Data(BaseModel):
+        video_id: str
+
+    data: Data
 
 
 class HeygenStatusResponse(BaseModel):
-    duration: float | None = None
-    error: dict | None = None
-    gif_url: str | None = None
-    id: str
-    status: Literal["processing", "completed", "failed", "pending"]
-    thumbnail_url: str | None = None
-    video_url: str | None = None
+    class Data(BaseModel):
+        duration: float | None = None
+        error: dict | None = None
+        gif_url: str | None = None
+        id: str
+        status: Literal["processing", "completed", "failed", "pending"]
+        thumbnail_url: str | None = None
+        video_url: str | None = None
+
+    data: Data
 
 
 class HeygenVoicesResponse(BaseModel):
-    class Voice(BaseModel):
-        voice_id: str
-        language: str
-        gender: str
-        name: str
-        preview_audio: str
-        support_pause: bool
-        emotion_support: bool
-        support_locale: bool
+    class Data(BaseModel):
+        class Voice(BaseModel):
+            voice_id: str
+            language: str
+            gender: str
+            name: str
+            preview_audio: str
+            support_pause: bool
+            emotion_support: bool
+            support_locale: bool
 
-    voices: list[Voice]
+        voices: list[Voice]
+
+    data: Data
 
 
 class HeygenAvatarsResponse(BaseModel):
-    class Avatar(BaseModel):
-        avatar_id: str
-        avatar_name: str
-        preview_image_url: str
-        preview_video_url: str
-        gender: str
-        premium: bool
+    class Data(BaseModel):
+        class Avatar(BaseModel):
+            avatar_id: str
+            avatar_name: str
+            preview_image_url: str
+            preview_video_url: str
+            gender: str
+            premium: bool
 
-    avatars: list[Avatar]
+        avatars: list[Avatar]
+
+    data: Data

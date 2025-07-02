@@ -86,5 +86,8 @@ class HttpApiClient(AuthMixin):
         except aiohttp.client_exceptions.ContentTypeError as e:
             raise IntegrationInvalidResponseException("Empty response") from e
 
-        logger.debug(f"Get api response to {endpoint}: {response_data}")
+        if len(str(response_data)) > 2500:
+            logger.debug(f"Get api response to {endpoint}: [truncated]")
+        else:
+            logger.debug(f"Get api response to {endpoint}: {response_data}")
         return response_data

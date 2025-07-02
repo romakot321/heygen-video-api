@@ -8,4 +8,4 @@ class GetVoicesUseCase:
 
     async def execute(self) -> list[IntegrationVoiceDTO]:
         response = await self.adapter.list_all_voices()
-        return [IntegrationVoiceDTO(**avatar.model_dump()) for avatar in response.voices]
+        return [IntegrationVoiceDTO(**avatar.model_dump()) for avatar in response.data.voices]

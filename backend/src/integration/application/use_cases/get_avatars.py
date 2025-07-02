@@ -8,4 +8,4 @@ class GetAvatarsUseCase:
 
     async def execute(self) -> list[IntegrationAvatarDTO]:
         response = await self.adapter.list_all_avatars()
-        return [IntegrationAvatarDTO(**avatar.model_dump()) for avatar in response.avatars]
+        return [IntegrationAvatarDTO(**avatar.model_dump()) for avatar in response.data.avatars]

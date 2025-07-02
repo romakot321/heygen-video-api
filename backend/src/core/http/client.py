@@ -77,7 +77,6 @@ class AsyncHttpClient(IHttpClient):
 
         logger.debug(f"Started PUT: {url}")
         response = await client.put(url, **kwargs)
-        logger.debug(f"Response PUT {url}: {await response.text()}")
         return response
 
     @classmethod
