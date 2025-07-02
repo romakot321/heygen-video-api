@@ -1,4 +1,7 @@
 import os
+from typing import Annotated
+
+from fastapi import Depends
 
 from src.admin.application.adapter import AdminAdapter
 from src.admin.application.interfaces.admin_data_storage import IAdminDataStorage
@@ -28,3 +31,6 @@ def get_admin_adapter() -> AdminAdapter:
     repository = get_admin_repository()
     storage = get_admin_data_storage()
     return AdminAdapter(repository, storage)
+
+
+AdminAdapterDepend = Annotated[AdminAdapter, Depends(get_admin_adapter)]
