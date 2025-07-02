@@ -70,7 +70,7 @@ class HeygenRunRequest(BaseModel):
         background: Background | None = None
 
     video_inputs: list[VideoInput]
-    dimension: TypedDict("Dimension", {"width": int, "height": int}) = {"width": 1280, "height": 720}
+    dimension: TypedDict("Dimension", {"width": int, "height": int}) = Field(default_factory=lambda: {"width": 1280, "height": 720})
 
 
 class HeygenRunResponse(BaseModel):
