@@ -62,8 +62,9 @@ class HttpApiClient(AuthMixin):
     ) -> ApiResponse:
         headers = headers or {}
         cookies = cookies or {}
+        url = urljoin(self.source_url, endpoint) if not endpoint.startswith("http") else endpoint
         request_params = {
-            "url": urljoin(self.source_url, endpoint),
+            "url": url,
             "headers": {**self.headers, **headers},
             "json": json,
             "params": params,

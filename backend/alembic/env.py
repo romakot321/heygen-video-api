@@ -8,6 +8,7 @@ from alembic import context
 
 from src.db.base import Base
 from src.task.infrastructure.db.orm import TaskDB
+from src.integration.infrastructure.db.orm import AvatarDB
 from src.core.config import settings
 
 # this is the Alembic Config object, which provides

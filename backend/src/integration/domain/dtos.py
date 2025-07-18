@@ -1,4 +1,5 @@
 from enum import Enum
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -42,3 +43,15 @@ class IntegrationVoiceDTO(BaseModel):
     support_pause: bool
     emotion_support: bool
     support_locale: bool
+
+
+class AvatarCreateDTO(BaseModel):
+    user_id: str
+    app_bundle: str
+
+
+class AvatarReadDTO(BaseModel):
+    id: UUID
+    user_id: str
+    app_bundle: str
+    heygen_id: str | None = None

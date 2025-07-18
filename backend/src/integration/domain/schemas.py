@@ -73,9 +73,49 @@ class HeygenRunRequest(BaseModel):
     dimension: TypedDict("Dimension", {"width": int, "height": int}) = Field(default_factory=lambda: {"width": 1280, "height": 720})
 
 
+class HeygenCreatePhotoAvatarGroupRequest(BaseModel):
+    name: str
+    image_key: str
+
+
+class HeygenAddLooksToPhotoAvatarGroupRequest(BaseModel):
+    group_id: str
+    image_keys: list[str]
+    name: str
+
+
 class HeygenRunResponse(BaseModel):
     class Data(BaseModel):
         video_id: str
+
+    data: Data
+
+
+class HeygenCreatePhotoAvatarGroupResponse(BaseModel):
+    class Data(BaseModel):
+        group_id: str
+
+    data: Data
+
+
+class HeygenGetTrainingJobStatusResponse(BaseModel):
+    class Data(BaseModel):
+        status: Literal["pending", "ready"]
+        error_msg: str
+        created_at: int
+        updated_at: int
+
+    data: Data
+
+
+class HeygenAssetUploadResponse(BaseModel):
+    class Data(BaseModel):
+        id: str
+        name: str
+        file_type: str
+        folder_id: str
+        meta: str
+        image_key: str | None = None
 
     data: Data
 
