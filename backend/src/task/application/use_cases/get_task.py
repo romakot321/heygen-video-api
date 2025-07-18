@@ -1,3 +1,4 @@
+import json
 from uuid import UUID
 
 from fastapi import HTTPException
@@ -17,4 +18,5 @@ class GetTaskUseCase:
                 task = await self.uow.tasks.get_by_pk(task_id)
             except DBModelNotFoundException:
                 raise HTTPException(404)
-        return TaskReadDTO(**task.model_dump())
+        result = json.loads(task.result) if task.result else {"thumbnail_url": None, "video_url": None}
+        return TaskReadDTO(**task.model_dump(exclude={"result"}), **result)

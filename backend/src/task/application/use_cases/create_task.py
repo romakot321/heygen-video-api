@@ -15,4 +15,4 @@ class CreateTaskUseCase:
             task = await self.uow.tasks.create(command)
             await self.uow.commit()
         logger.debug(f"Created {task=}")
-        return TaskReadDTO(**task.model_dump())
+        return TaskReadDTO(**task.model_dump(exclude={"result"}))

@@ -1,9 +1,13 @@
-from fastapi import APIRouter
+from io import BytesIO
 
-from src.integration.api.dependencies import HeygenAdapterDepend
+from fastapi import APIRouter, Depends, UploadFile, File, Query
+
+from src.integration.api.dependencies import HeygenAdapterDepend, AvatarUoWDepend
+from src.integration.application.use_cases.create_avatar import CreateAvatarUseCase
 from src.integration.application.use_cases.get_avatars import GetAvatarsUseCase
+from src.integration.application.use_cases.get_user_avatars_list import GetUserAvatarsListUseCase
 from src.integration.application.use_cases.get_voices import GetVoicesUseCase
-from src.integration.domain.dtos import IntegrationAvatarDTO, IntegrationVoiceDTO
+from src.integration.domain.dtos import IntegrationAvatarDTO, IntegrationVoiceDTO, AvatarReadDTO, AvatarCreateDTO
 
 router = APIRouter()
 
@@ -16,3 +20,14 @@ async def get_heygen_avatars(adapter: HeygenAdapterDepend):
 @router.get("/heygen/voices", response_model=list[IntegrationVoiceDTO])
 async def get_heygen_voices(adapter: HeygenAdapterDepend):
     return await GetVoicesUseCase(adapter).execute()
+
+
+@router.post("/heygen/avatar", response_model=AvatarReadDTO)
+async def create_user_heygen_avatar(adapter: HeygenAdapterDepend, uow: AvatarUoWDepend, images: list[UploadFile], dto: AvatarCreateDTO = Depends()):
+    images = [BytesIO(await image.read()) for image in images]
+    return await CreateAvatarUseCase(uow, adapter).execute(dto, images)
+
+
+@router.get("/heygen/avatar", response_model=list[AvatarReadDTO])
+async def get_user_heygen_avatars_list(uow: AvatarUoWDepend, adapter: HeygenAdapterDepend, user_id: str = Query(), app_bundle: str = Query()):
+    return await GetUserAvatarsListUseCase(uow, adapter).execute(user_id, app_bundle)

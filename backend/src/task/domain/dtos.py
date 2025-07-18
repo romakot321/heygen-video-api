@@ -45,7 +45,8 @@ class TaskCreateDTO(IntegrationTaskRunParamsDTO, BaseModel):
 class TaskReadDTO(BaseModel):
     id: UUID
     status: TaskStatus
-    result: str | None = None
+    thumbnail_url: str | None = None
+    video_url: str | None = None
     error: str | None = None
 
 

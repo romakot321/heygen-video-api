@@ -5,12 +5,8 @@ import aiohttp
 from loguru import logger
 from pydantic import BaseModel, ValidationError
 
-from src.core.http.client import IHttpClient
-from src.integration.domain.exceptions import (
-    IntegrationRequestException,
-    IntegrationUnauthorizedExeception,
-    IntegrationInvalidResponseException,
-)
+from src.admin.domain.exceptions import AdminRequestException, AdminException
+from src.admin.infrastructure.http.client import IHttpClient
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -20,12 +16,12 @@ class AuthMixin:
 
     @property
     def auth_headers(self):
-        return {"X-Api-Key": self.token}
+        return {"Authorization": f"Bearer {self.token}"}
 
 
 class ApiResponse(BaseModel):
     cookies: dict
-    data: dict
+    data: dict | list
     headers: dict
 
 
@@ -48,7 +44,7 @@ class HttpApiClient(AuthMixin):
         try:
             return validator.model_validate(response)
         except ValidationError as e:
-            raise IntegrationInvalidResponseException(e) from e
+            raise AdminException(e) from e
 
     async def request(
             self,
@@ -62,9 +58,8 @@ class HttpApiClient(AuthMixin):
     ) -> ApiResponse:
         headers = headers or {}
         cookies = cookies or {}
-        url = urljoin(self.source_url, endpoint) if not endpoint.startswith("http") else endpoint
         request_params = {
-            "url": url,
+            "url": urljoin(self.source_url, endpoint),
             "headers": {**self.headers, **headers},
             "json": json,
             "params": params,
@@ -76,19 +71,17 @@ class HttpApiClient(AuthMixin):
         response = await func(**request_params)
         if not response.ok:
             if response.status == 401:
-                raise IntegrationUnauthorizedExeception()
-            raise IntegrationRequestException(message=await response.text())
+                raise AdminRequestException("Unauthorized")
+            raise AdminRequestException(await response.text())
 
         try:
-            response_data = ApiResponse(
-                data=await response.json(), cookies=dict(response.cookies.items()),
-                headers=dict(response.headers.items())
-            )
+            response_data = ApiResponse(data=await response.json(), cookies=dict(response.cookies.items()), headers=dict(response.headers.items()))
         except aiohttp.client_exceptions.ContentTypeError as e:
-            raise IntegrationInvalidResponseException("Empty response") from e
+            response_data = ApiResponse(data={}, cookies=dict(response.cookies.items()), headers=dict(response.headers.items()))
 
         if len(str(response_data)) > 2500:
             logger.debug(f"Get api response to {endpoint}: [truncated]")
         else:
             logger.debug(f"Get api response to {endpoint}: {response_data}")
+
         return response_data

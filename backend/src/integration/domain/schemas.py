@@ -70,7 +70,18 @@ class HeygenRunRequest(BaseModel):
         background: Background | None = None
 
     video_inputs: list[VideoInput]
-    dimension: TypedDict("Dimension", {"width": int, "height": int}) = {"width": 1280, "height": 720}
+    dimension: TypedDict("Dimension", {"width": int, "height": int}) = Field(default_factory=lambda: {"width": 1280, "height": 720})
+
+
+class HeygenCreatePhotoAvatarGroupRequest(BaseModel):
+    name: str
+    image_key: str
+
+
+class HeygenAddLooksToPhotoAvatarGroupRequest(BaseModel):
+    group_id: str
+    image_keys: list[str]
+    name: str
 
 
 class HeygenRunResponse(BaseModel):
@@ -80,8 +91,6 @@ class HeygenRunResponse(BaseModel):
     data: Data
 
 
-<<<<<<< Updated upstream
-=======
 class HeygenCreatePhotoAvatarGroupResponse(BaseModel):
     class Data(BaseModel):
         group_id: str
@@ -108,7 +117,6 @@ class HeygenAssetUploadResponse(BaseModel):
     data: Data
 
 
->>>>>>> Stashed changes
 class HeygenStatusResponse(BaseModel):
     class Data(BaseModel):
         duration: float | None = None
