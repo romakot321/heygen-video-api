@@ -80,6 +80,35 @@ class HeygenRunResponse(BaseModel):
     data: Data
 
 
+<<<<<<< Updated upstream
+=======
+class HeygenCreatePhotoAvatarGroupResponse(BaseModel):
+    class Data(BaseModel):
+        group_id: str
+
+    data: Data
+
+
+class HeygenGetTrainingJobStatusResponse(BaseModel):
+    class Data(BaseModel):
+        status: Literal["pending", "ready"]
+        error_msg: str
+        created_at: int
+        updated_at: int
+
+    data: Data
+
+
+class HeygenAssetUploadResponse(BaseModel):
+    class Data(BaseModel):
+        id: str
+        file_type: str
+        image_key: str | None = None
+
+    data: Data
+
+
+>>>>>>> Stashed changes
 class HeygenStatusResponse(BaseModel):
     class Data(BaseModel):
         duration: float | None = None
