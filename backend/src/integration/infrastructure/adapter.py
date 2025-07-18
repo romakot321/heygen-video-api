@@ -6,7 +6,8 @@ from src.core.config import settings
 from src.core.http.client import IHttpClient
 from src.integration.domain.schemas import HeygenRunResponse, HeygenRunRequest, HeygenStatusResponse, \
     HeygenAvatarsResponse, HeygenVoicesResponse, HeygenAssetUploadResponse, HeygenCreatePhotoAvatarGroupRequest, \
-    HeygenCreatePhotoAvatarGroupResponse, HeygenAddLooksToPhotoAvatarGroupRequest, HeygenGetTrainingJobStatusResponse
+    HeygenCreatePhotoAvatarGroupResponse, HeygenAddLooksToPhotoAvatarGroupRequest, HeygenGetTrainingJobStatusResponse, \
+    HeygenAvatarsInGroupResponse
 from src.integration.infrastructure.http_api_client import HttpApiClient
 
 
@@ -58,3 +59,7 @@ class HeygenAdapter(HttpApiClient):
     async def get_train_photo_avatar_group_status(self, group_id: str) -> HeygenGetTrainingJobStatusResponse:
         response = await self.request("GET", f"/v2/photo_avatar/train/status/{group_id}")
         return self.validate_response(response.data, HeygenGetTrainingJobStatusResponse)
+
+    async def list_all_avatars_in_one_avatar_group(self, group_id: str) -> HeygenAvatarsInGroupResponse:
+        response = await self.request("GET", f"/v2/avatar_group/{group_id}/avatars")
+        return self.validate_response(response.data, HeygenAvatarsInGroupResponse)

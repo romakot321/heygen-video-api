@@ -160,3 +160,15 @@ class HeygenAvatarsResponse(BaseModel):
         avatars: list[Avatar]
 
     data: Data
+
+
+class HeygenAvatarsInGroupResponse(BaseModel):
+    class Data(BaseModel):
+        class Avatar(BaseModel):
+            id: str
+            group_id: str
+            status: str
+
+        avatar_list: list[Avatar]
+
+    data: Data
