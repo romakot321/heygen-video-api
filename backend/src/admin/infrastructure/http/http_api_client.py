@@ -79,9 +79,4 @@ class HttpApiClient(AuthMixin):
         except aiohttp.client_exceptions.ContentTypeError as e:
             response_data = ApiResponse(data={}, cookies=dict(response.cookies.items()), headers=dict(response.headers.items()))
 
-        if len(str(response_data)) > 2500:
-            logger.debug(f"Get api response to {endpoint}: [truncated]")
-        else:
-            logger.debug(f"Get api response to {endpoint}: {response_data}")
-
         return response_data

@@ -9,7 +9,7 @@ from src.integration.domain.dtos import AvatarCreateDTO, AvatarReadDTO
 from src.integration.domain.entities import AvatarCreate, Avatar
 from src.integration.domain.schemas import HeygenCreatePhotoAvatarGroupRequest, HeygenAddLooksToPhotoAvatarGroupRequest
 from src.integration.infrastructure.adapter import HeygenAdapter
-from src.integration.domain.exceptions import IntegrationRequestException
+from src.integration.domain.exceptions import IntegrationRequestException, IntegrationInvalidResponseException
 
 
 class CreateAvatarUseCase:
@@ -17,7 +17,7 @@ class CreateAvatarUseCase:
         self.uow = uow
         self.heygen_adapter = heygen_adapter
 
-    async def execute(self, dto: AvatarCreateDTO, images: list[BytesIO]) -> AvatarReadDTO:
+    async def execute(self, dto: AvatarCreateDTO, images: list[tuple[BytesIO, str]]) -> AvatarReadDTO:
         if not images:
             raise HTTPException(422, detail="Must be at least one image")
         images_keys = await self._upload_images(images)
@@ -39,10 +39,13 @@ class CreateAvatarUseCase:
         except IntegrationRequestException as e:
             raise HTTPException(400, detail=str(e.message))
 
-    async def _upload_images(self, images: list[BytesIO]) -> list[str]:
+    async def _upload_images(self, images: list[tuple[BytesIO, str]]) -> list[str]:
         images_keys = []
         for image in images:
-            response = await self.heygen_adapter.upload_asset(image)
+            try:
+                response = await self.heygen_adapter.upload_asset(image)
+            except IntegrationInvalidResponseException:
+                raise HTTPException(400, detail="Failed to upload images. Possibly invalid image type")
             images_keys.append(response.data.image_key)
         return images_keys
 

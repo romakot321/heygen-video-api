@@ -123,7 +123,7 @@ class HeygenStatusResponse(BaseModel):
         error: dict | None = None
         gif_url: str | None = None
         id: str
-        status: Literal["processing", "completed", "failed", "pending"]
+        status: Literal["processing", "completed", "failed", "pending", "waiting"]
         thumbnail_url: str | None = None
         video_url: str | None = None
 

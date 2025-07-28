@@ -21,7 +21,9 @@ class IntegrationResponseToDomainMapper:
         })
 
     def _map_status(self, status: IntegrationTaskStatus) -> TaskStatus:
-        if status == IntegrationTaskStatus.pending:
+        if status == IntegrationTaskStatus.waiting:
+            return TaskStatus.queued
+        elif status == IntegrationTaskStatus.pending:
             return TaskStatus.queued
         elif status == IntegrationTaskStatus.processing:
             return TaskStatus.started

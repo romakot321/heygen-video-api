@@ -7,6 +7,7 @@ from src.integration.domain.schemas import HeygenRunRequest
 
 
 class IntegrationTaskStatus(str, Enum):
+    waiting = "waiting"
     processing = "processing"
     completed = "completed"
     failed = "failed"

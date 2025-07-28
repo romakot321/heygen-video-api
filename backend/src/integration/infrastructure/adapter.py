@@ -41,8 +41,11 @@ class HeygenAdapter(HttpApiClient):
         response = await self.request("GET", "/v2/voices")
         return self.validate_response(response.data, HeygenVoicesResponse)
 
-    async def upload_asset(self, file: BytesIO) -> HeygenAssetUploadResponse:
-        file.name = "tmp.png"
+    async def upload_asset(self, file: BytesIO, content_type: str) -> HeygenAssetUploadResponse:
+        if content_type.endswith("jpeg"):
+            file.name = "tmp.jpeg"
+        else:
+            file.name = "tmp.jpeg"
         response = await self.request("POST", "https://upload.heygen.com/v1/asset", data=file)
         return self.validate_response(response.data, HeygenAssetUploadResponse)
 

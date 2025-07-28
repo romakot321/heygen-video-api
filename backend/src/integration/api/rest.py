@@ -24,7 +24,7 @@ async def get_heygen_voices(adapter: HeygenAdapterDepend):
 
 @router.post("/heygen/avatar", response_model=AvatarReadDTO)
 async def create_user_heygen_avatar(adapter: HeygenAdapterDepend, uow: AvatarUoWDepend, images: list[UploadFile], dto: AvatarCreateDTO = Depends()):
-    images = [BytesIO(await image.read()) for image in images]
+    images = [(BytesIO(await image.read()), image.content_type) for image in images]
     return await CreateAvatarUseCase(uow, adapter).execute(dto, images)
 
 

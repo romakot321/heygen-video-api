@@ -13,7 +13,7 @@ from src.task.domain.mappers import IntegrationResponseToDomainMapper
 
 
 class RunTaskUseCase:
-    TIMEOUT_SECONDS = 5 * 60
+    TIMEOUT_SECONDS = 10 * 60
 
     def __init__(
             self,
