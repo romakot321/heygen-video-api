@@ -6,6 +6,7 @@ from src.core.http.client import AsyncHttpClient
 from src.integration.application.interfaces.avatar_uow import IAvatarUnitOfWork
 from src.integration.infrastructure.adapter import HeygenAdapter
 from src.integration.infrastructure.db.avatar_uow import PGAvatarUnitOfWork
+from src.integration.infrastructure.storage_repository import StorageRepository
 from src.integration.infrastructure.task_runner import HeygenTaskRunner
 from src.task.application.interfaces.task_runner import ITaskRunner
 
@@ -23,5 +24,10 @@ def get_avatar_uow() -> IAvatarUnitOfWork:
     return PGAvatarUnitOfWork()
 
 
+def get_storage_repository() -> StorageRepository:
+    return StorageRepository()
+
+
 HeygenAdapterDepend = Annotated[HeygenAdapter, Depends(get_heygen_adapter)]
 AvatarUoWDepend = Annotated[IAvatarUnitOfWork, Depends(get_avatar_uow)]
+StorageRepositoryDepend = Annotated[StorageRepository, Depends(get_storage_repository)]

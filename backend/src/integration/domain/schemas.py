@@ -35,9 +35,22 @@ class SilenceVoice(BaseModel):
     duration: float = Field(default=1.0, ge=1, le=100)
 
 
-class Background(BaseModel):
-    type: Literal["color", "image", "video"]
+class ColorBackground(BaseModel):
+    type: Literal["color"]
     value: str | None = Field(default=None, description="Color for type=color")
+
+
+class ImageBackground(BaseModel):
+    type: Literal["image"]
+    url: str
+    fit: Literal["cover", "crop", "contain", "none"] | None = None
+
+
+class VideoBackground(BaseModel):
+    type: Literal["video"]
+    url: str
+    play_style: Literal["fit_to_scene", "freeze", "loop", "once"]
+    fit: Literal["cover", "crop", "contain", "none"] | None = None
 
 
 class AvatarCharacter(BaseModel):
@@ -67,7 +80,7 @@ class HeygenRunRequest(BaseModel):
     class VideoInput(BaseModel):
         character: AvatarCharacter | TalkingPhotoCharacter | None = None
         voice: TextVoice | AudioVoice | SilenceVoice
-        background: Background | None = None
+        background: ColorBackground | ImageBackground | VideoBackground | None = None
 
     video_inputs: list[VideoInput]
     dimension: TypedDict("Dimension", {"width": int, "height": int}) = Field(default_factory=lambda: {"width": 1280, "height": 720})

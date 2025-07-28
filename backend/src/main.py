@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Depends
+from starlette.staticfiles import StaticFiles
 
 from src.admin.api.dependencies import get_admin_adapter
 from src.admin.main import setup_admin_integration
@@ -19,6 +20,7 @@ async def lifespan(app):
 app = FastAPI(title="heygen video api", dependencies=[Depends(validate_api_token)], lifespan=lifespan)
 setup_fastapi_logging(app)
 setup_admin_integration(app)
+app.mount("/api/storage", StaticFiles(directory="storage"))
 
 app.include_router(task_router, tags=["Task"], prefix="/api/task")
 app.include_router(integration_router, tags=["Integration"], prefix="/api/integration")

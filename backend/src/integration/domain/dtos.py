@@ -56,3 +56,7 @@ class AvatarReadDTO(BaseModel):
     user_id: str
     app_bundle: str
     heygen_id: str | None = None
+
+
+class HeygenBackgroundDTO(BaseModel):
+    url: str

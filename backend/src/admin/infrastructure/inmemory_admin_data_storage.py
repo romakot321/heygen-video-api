@@ -5,9 +5,10 @@ _storage: list[ApiConnectionReadDTO] = []
 
 
 class InMemoryAdminDataStorage(IAdminDataStorage):
+    storage = _storage
+
     def __init__(self):
-        global _storage
-        self.storage = _storage
+        pass
 
     async def store_app_connections(self, connections: list[ApiConnectionReadDTO]) -> None:
         self.storage.extend(connections)
